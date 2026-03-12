@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frost Transport Solutions | Admin Suite</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --frost-red: #C31F2E;
+            --frost-black: #1a1a1a;
+            --frost-light-grey: #f4f4f4;
+            --frost-white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        body { background-color: var(--frost-light-grey); color: var(--frost-black); overflow: hidden; height: 100vh; }
+
+        /* --- Login Section --- */
+        #login-screen {
+            height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, var(--frost-black) 0%, #333 100%);
+            position: fixed; z-index: 1000;
+        }
+        .login-card {
+            background: var(--frost-white); padding: 3rem; border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4); width: 100%; max-width: 420px;
+            text-align: center; border-top: 6px solid var(--frost-red);
+        }
+        .login-card img { max-width: 250px; margin-bottom: 2rem; }
+        .form-group { text-align: left; margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.85rem; color: #666; }
+        input { width: 100%; padding: 0.9rem; border: 2px solid #eee; border-radius: 6px; font-size: 1rem; }
+        input:focus { outline: none; border-color: var(--frost-red); }
+        .login-btn {
+            width: 100%; padding: 1rem; background: var(--frost-red); color: white;
+            border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .login-btn:hover { background: #a01925; transform: translateY(-2px); }
+        .error-msg { color: var(--frost-red); font-size: 0.9rem; margin-top: 1rem; display: none; font-weight: bold; }
+
+        /* --- Dashboard --- */
+        #dashboard-screen { display: none; height: 100vh; flex-direction: column; }
+        nav {
+            background: var(--frost-black); color: white; padding: 0.8rem 2rem;
+            display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--frost-red);
+        }
+        nav img { height: 45px; }
+        .logout-btn { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 15px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+        .logout-btn:hover { background: var(--frost-red); border-color: var(--frost-red); }
+
+        .main-content { flex-grow: 1; padding: 3rem 2rem; overflow-y: auto; max-width: 1400px; margin: 0 auto; width: 100%; }
+        .welcome-msg { margin-bottom: 2.5rem; }
+        .welcome-msg h1 { font-size: 2rem; font-weight: 800; }
+
+        /* --- Grid & Cards --- */
+        .app-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; }
+        .app-card {
+            background: white; padding: 2.5rem 1.5rem; border-radius: 12px; text-align: center;
+            cursor: pointer; transition: 0.3s ease; border: 1px solid #e0e0e0; display: flex; flex-direction: column; align-items: center; gap: 1.2rem;
+        }
+        .app-card:hover { transform: translateY(-10px); border-color: var(--frost-red); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .icon-box { width: 70px; height: 70px; background: #f0f0f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--frost-red); transition: 0.3s; }
+        .app-card:hover .icon-box { background: var(--frost-red); color: white; }
+        .app-card h3 { font-size: 1.2rem; font-weight: 700; color: var(--frost-black); }
+
+        /* --- App Viewer Overlay --- */
+        #app-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; }
+        .viewer-nav { background: var(--frost-black); padding: 12px 20px; display: flex; align-items: center; border-bottom: 3px solid var(--frost-red); }
+        .back-btn { background: var(--frost-red); color: white; border: none; padding: 8px 18px; border-radius: 4px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        iframe { width: 100%; height: calc(100% - 62px); border: none; background: white; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-card">
+            <img src="logo.png" alt="Frost Transport Solutions">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" value="Richard Robinson">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter Frost2026">
+            </div>
+            <button class="login-btn" onclick="handleLogin()">SECURE LOGIN</button>
+            <p id="error-msg" class="error-msg">Access Denied: Check credentials.</p>
+        </div>
+    </div>
+
+    <div id="dashboard-screen">
+        <nav>
+            <img src="logo.png" alt="Frost Logo">
+            <div>
+                <span style="margin-right:15px">Admin: <strong>Richard Robinson</strong></span>
+                <button class="logout-btn" onclick="handleLogout()">Logout</button>
+            </div>
+        </nav>
+
+        <div class="main-content">
+            <div class="welcome-msg">
+                <h1>Master Admin Suite</h1>
+                <p>Welcome back, Richard. Select an application to begin.</p>
+            </div>
+
+            <div class="app-grid">
+                <div class="app-card" onclick="openApp(0)">
+                    <div class="icon-box"><i data-lucide="smartphone" size="32"></i></div>
+                    <h3>Drivers App</h3>
+                </div>
+                <div class="app-card" onclick="openApp(1)">
+                    <div class="icon-box"><i data-lucide="shield-check" size="32"></i></div>
+                    <h3>Driver Admin</h3>
+                </div>
+                <div class="app-card" onclick="openApp(2)">
+                    <div class="icon-box"><i data-lucide="book-open" size="32"></i></div>
+                    <h3>FTS Directory</h3>
+                </div>
+                <div class="app-card" onclick="openApp(3)">
+                    <div class="icon-box"><i data-lucide="layout" size="32"></i></div>
+                    <h3>Customer Portal</h3>
+                </div>
+                <div class="app-card" onclick="openApp(4)">
+                    <div class="icon-box"><i data-lucide="calendar-check" size="32"></i></div>
+                    <h3>Customer Bookings</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-viewer">
+        <div class="viewer-nav">
+            <button class="back-btn" onclick="closeApp()">
+                <i data-lucide="arrow-left" size="18"></i> Back to Dashboard
+            </button>
+            <span id="active-app-name" style="color:white; margin-left: 20px; font-weight: bold; letter-spacing: 0.5px;"></span>
+        </div>
+        <iframe id="app-frame" src=""></iframe>
+    </div>
+
+    <script>
+        // --- ADMIN CONFIGURATION ---
+        const VALID_USER = "Richard Robinson";
+        const VALID_PASS = "Frost2026";
+        
+        // Mapped to your specific links
+        const appUrls = [
+            "https://rich01623.github.io/frost-fleet-app/",    // 1. Drivers App
+            "https://rich01623.github.io/Office-dashboard/",  // 2. Driver Admin
+            "https://rich01623.github.io/fts-directory/",   // 3. FTS Directory
+            "https://rich01623.github.io/FTS-Customer-Portal/",   // 4. Customer Portal
+            ""                                      // 5. Customer Bookings (Add URL here)
+        ]; 
+
+        const appNames = [
+            "Drivers App", 
+            "Driver Admin", 
+            "FTS Directory", 
+            "Customer Portal", 
+            "Customer Bookings"
+        ];
+
+        // --- CORE LOGIC ---
+        
+        window.onload = () => {
+            lucide.createIcons();
+            // Check for existing session
+            if (localStorage.getItem('frost_session_active') === 'true') {
+                showDashboard();
+            }
+        };
+
+        function handleLogin() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            const err = document.getElementById('error-msg');
+
+            if (u === VALID_USER && p === VALID_PASS) {
+                localStorage.setItem('frost_session_active', 'true');
+                showDashboard();
+            } else {
+                err.style.display = 'block';
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('frost_session_active');
+            location.reload();
+        }
+
+        function showDashboard() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('dashboard-screen').style.display = 'flex';
+        }
+
+        // --- APP VIEWER LOGIC ---
+
+        function openApp(index) {
+            const url = appUrls[index];
+            if (!url) {
+                alert("The link for '" + appNames[index] + "' hasn't been added to the code yet.");
+                return;
+            }
+
+            document.getElementById('active-app-name').innerText = "FROST SUITE | " + appNames[index].toUpperCase();
+            document.getElementById('app-frame').src = url;
+            document.getElementById('app-viewer').style.display = 'block';
+        }
+
+        function closeApp() {
+            document.getElementById('app-viewer').style.display = 'none';
+            document.getElementById('app-frame').src = ""; // Stop the page from running in background
+        }
+
+        // Listen for Enter Key on Login
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
+                handleLogin();
+            }
+        });
+    </script>
+</body>
+</html>
