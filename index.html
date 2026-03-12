@@ -30,8 +30,11 @@
         .login-card img { max-width: 250px; margin-bottom: 2rem; }
         .form-group { text-align: left; margin-bottom: 1.5rem; }
         label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.85rem; color: #666; }
-        input { width: 100%; padding: 0.9rem; border: 2px solid #eee; border-radius: 6px; font-size: 1rem; }
-        input:focus { outline: none; border-color: var(--frost-red); }
+        input { 
+            width: 100%; padding: 0.9rem; border: 2px solid #eee; border-radius: 6px; font-size: 1rem; 
+            outline: none; transition: border-color 0.3s;
+        }
+        input:focus { border-color: var(--frost-red); }
         .login-btn {
             width: 100%; padding: 1rem; background: var(--frost-red); color: white;
             border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s;
@@ -78,14 +81,14 @@
             <img src="logo.png" alt="Frost Transport Solutions">
             <div class="form-group">
                 <label>Username</label>
-                <input type="text" id="username" value="Richard Robinson">
+                <input type="text" id="username" placeholder="Username">
             </div>
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" id="password" placeholder="Enter Frost2026">
+                <input type="password" id="password" placeholder="Password">
             </div>
             <button class="login-btn" onclick="handleLogin()">SECURE LOGIN</button>
-            <p id="error-msg" class="error-msg">Access Denied: Check credentials.</p>
+            <p id="error-msg" class="error-msg">Access Denied: Invalid Credentials.</p>
         </div>
     </div>
 
@@ -97,34 +100,17 @@
                 <button class="logout-btn" onclick="handleLogout()">Logout</button>
             </div>
         </nav>
-
         <div class="main-content">
             <div class="welcome-msg">
                 <h1>Master Admin Suite</h1>
-                <p>Welcome back, Richard. Select an application to begin.</p>
+                <p>Select an application to begin.</p>
             </div>
-
             <div class="app-grid">
-                <div class="app-card" onclick="openApp(0)">
-                    <div class="icon-box"><i data-lucide="smartphone" size="32"></i></div>
-                    <h3>Drivers App</h3>
-                </div>
-                <div class="app-card" onclick="openApp(1)">
-                    <div class="icon-box"><i data-lucide="shield-check" size="32"></i></div>
-                    <h3>Driver Admin</h3>
-                </div>
-                <div class="app-card" onclick="openApp(2)">
-                    <div class="icon-box"><i data-lucide="book-open" size="32"></i></div>
-                    <h3>FTS Directory</h3>
-                </div>
-                <div class="app-card" onclick="openApp(3)">
-                    <div class="icon-box"><i data-lucide="layout" size="32"></i></div>
-                    <h3>Customer Portal</h3>
-                </div>
-                <div class="app-card" onclick="openApp(4)">
-                    <div class="icon-box"><i data-lucide="calendar-check" size="32"></i></div>
-                    <h3>Customer Bookings</h3>
-                </div>
+                <div class="app-card" onclick="openApp(0)"><div class="icon-box"><i data-lucide="smartphone" size="32"></i></div><h3>Drivers App</h3></div>
+                <div class="app-card" onclick="openApp(1)"><div class="icon-box"><i data-lucide="shield-check" size="32"></i></div><h3>Driver Admin</h3></div>
+                <div class="app-card" onclick="openApp(2)"><div class="icon-box"><i data-lucide="book-open" size="32"></i></div><h3>FTS Directory</h3></div>
+                <div class="app-card" onclick="openApp(3)"><div class="icon-box"><i data-lucide="layout" size="32"></i></div><h3>Customer Portal</h3></div>
+                <div class="app-card" onclick="openApp(4)"><div class="icon-box"><i data-lucide="calendar-check" size="32"></i></div><h3>Customer Bookings</h3></div>
             </div>
         </div>
     </div>
@@ -134,53 +120,45 @@
             <button class="back-btn" onclick="closeApp()">
                 <i data-lucide="arrow-left" size="18"></i> Back to Dashboard
             </button>
-            <span id="active-app-name" style="color:white; margin-left: 20px; font-weight: bold; letter-spacing: 0.5px;"></span>
+            <span id="active-app-name" style="color:white; margin-left: 20px; font-weight: bold;"></span>
         </div>
-        <iframe id="app-frame" src=""></iframe>
+        <iframe id="app-frame" src="" allow="fullscreen"></iframe>
     </div>
 
     <script>
-        // --- ADMIN CONFIGURATION ---
+        // Use EXACT matches for verification
         const VALID_USER = "Richard Robinson";
         const VALID_PASS = "Frost2026";
         
-        // Mapped to your specific links
         const appUrls = [
-            "https://rich01623.github.io/frost-fleet-app/",    // 1. Drivers App
-            "https://rich01623.github.io/Office-dashboard/",  // 2. Driver Admin
-            "https://rich01623.github.io/fts-directory/",   // 3. FTS Directory
-            "https://rich01623.github.io/FTS-Customer-Portal/",   // 4. Customer Portal
-            ""                                      // 5. Customer Bookings (Add URL here)
+            "https://rich01623.github.io/frost-fleet-app/",    
+            "https://rich01623.github.io/Office-dashboard/",  
+            "https://rich01623.github.io/fts-directory/",   
+            "https://rich01623.github.io/FTS-Customer-Portal/",   
+            ""                                      
         ]; 
 
-        const appNames = [
-            "Drivers App", 
-            "Driver Admin", 
-            "FTS Directory", 
-            "Customer Portal", 
-            "Customer Bookings"
-        ];
-
-        // --- CORE LOGIC ---
-        
         window.onload = () => {
             lucide.createIcons();
-            // Check for existing session
             if (localStorage.getItem('frost_session_active') === 'true') {
                 showDashboard();
             }
         };
 
         function handleLogin() {
-            const u = document.getElementById('username').value;
+            // Trim whitespace and handle casing
+            const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value;
             const err = document.getElementById('error-msg');
 
+            // Verification (Compare exactly as defined)
             if (u === VALID_USER && p === VALID_PASS) {
                 localStorage.setItem('frost_session_active', 'true');
                 showDashboard();
             } else {
                 err.style.display = 'block';
+                document.getElementById('password').value = "";
+                localStorage.removeItem('frost_session_active'); // Clear any bad data
             }
         }
 
@@ -194,26 +172,18 @@
             document.getElementById('dashboard-screen').style.display = 'flex';
         }
 
-        // --- APP VIEWER LOGIC ---
-
         function openApp(index) {
             const url = appUrls[index];
-            if (!url) {
-                alert("The link for '" + appNames[index] + "' hasn't been added to the code yet.");
-                return;
-            }
-
-            document.getElementById('active-app-name').innerText = "FROST SUITE | " + appNames[index].toUpperCase();
+            if (!url) { return alert("Link not yet added."); }
             document.getElementById('app-frame').src = url;
             document.getElementById('app-viewer').style.display = 'block';
         }
 
         function closeApp() {
             document.getElementById('app-viewer').style.display = 'none';
-            document.getElementById('app-frame').src = ""; // Stop the page from running in background
+            document.getElementById('app-frame').src = ""; 
         }
 
-        // Listen for Enter Key on Login
         document.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
                 handleLogin();
