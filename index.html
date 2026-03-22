@@ -52,14 +52,14 @@
         .logout-btn { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 15px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
         .logout-btn:hover { background: var(--frost-red); border-color: var(--frost-red); }
 
-        .main-content { flex-grow: 1; padding: 3rem 2rem; overflow-y: auto; max-width: 1400px; margin: 0 auto; width: 100%; }
-        .welcome-msg { margin-bottom: 2.5rem; }
+        .main-content { flex-grow: 1; padding: 2rem; overflow-y: auto; max-width: 1400px; margin: 0 auto; width: 100%; }
+        .welcome-msg { margin-bottom: 2rem; }
         .welcome-msg h1 { font-size: 2rem; font-weight: 800; }
 
         /* --- Grid & Cards --- */
         .app-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
             gap: 1.5rem; 
             padding-bottom: 2rem;
         }
@@ -103,7 +103,7 @@
         <nav>
             <img src="logo.png" alt="Frost Logo">
             <div>
-                <span style="margin-right:15px">Admin: <strong>Richard Robinson</strong></span>
+                <span style="margin-right:15px">Admin: <strong id="display-user-name">User</strong></span>
                 <button class="logout-btn" onclick="handleLogout()">Logout</button>
             </div>
         </nav>
@@ -113,26 +113,35 @@
                 <p>Select an application to begin.</p>
             </div>
             <div class="app-grid">
-                <div class="app-card" onclick="openApp(0)"><div class="icon-box"><i data-lucide="smartphone" size="28"></i></div><h3>Drivers App</h3></div>
-                <div class="app-card" onclick="openApp(1)"><div class="icon-box"><i data-lucide="shield-check" size="28"></i></div><h3>Driver Admin</h3></div>
-                <div class="app-card" onclick="openApp(2)"><div class="icon-box"><i data-lucide="book-open" size="28"></i></div><h3>FTS Directory</h3></div>
-                <div class="app-card" onclick="openApp(3)"><div class="icon-box"><i data-lucide="layout" size="28"></i></div><h3>Customer Portal</h3></div>
-                <div class="app-card" onclick="openApp(4)"><div class="icon-box"><i data-lucide="calendar-check" size="28"></i></div><h3>Customer Bookings</h3></div>
-                
-                <div class="app-card" onclick="openApp(5)">
+                <div class="app-card" onclick="openApp(0)"><div class="icon-box"><i data-lucide="calendar" size="28"></i></div><h3>Planner</h3></div>
+                <div class="app-card" onclick="openApp(1)"><div class="icon-box"><i data-lucide="smartphone" size="28"></i></div><h3>Drivers App</h3></div>
+                <div class="app-card" onclick="openApp(2)"><div class="icon-box"><i data-lucide="shield-check" size="28"></i></div><h3>Driver Admin</h3></div>
+                <div class="app-card" onclick="openApp(3)"><div class="icon-box"><i data-lucide="book-open" size="28"></i></div><h3>FTS Directory</h3></div>
+                <div class="app-card" onclick="openApp(4)"><div class="icon-box"><i data-lucide="banknote" size="28"></i></div><h3>Rate Card</h3></div>
+                <div class="app-card" onclick="openApp(5)"><div class="icon-box"><i data-lucide="layout" size="28"></i></div><h3>QTS PORTAL</h3></div>
+                <div class="app-card" onclick="openApp(6)"><div class="icon-box"><i data-lucide="calendar-check" size="28"></i></div><h3>Customer Bookings</h3></div>
+                <div class="app-card" onclick="openApp(7)">
                     <div class="icon-box"><i data-lucide="clipboard-edit" size="28"></i></div>
                     <h3>Edit Vehicle Check Form</h3>
                     <p class="warning-text">DO NOT EDIT!</p>
                 </div>
-                <div class="app-card" onclick="openApp(6)">
+                <div class="app-card" onclick="openApp(8)">
                     <div class="icon-box"><i data-lucide="file-edit" size="28"></i></div>
                     <h3>Edit Trailer Check Form</h3>
                     <p class="warning-text">DO NOT EDIT!</p>
                 </div>
-                <div class="app-card" onclick="openApp(7)">
+                <div class="app-card" onclick="openApp(9)">
                     <div class="icon-box"><i data-lucide="clock" size="28"></i></div>
                     <h3>Drivers Time Sheets</h3>
                     <p class="warning-text">DO NOT EDIT!</p>
+                </div>
+                <div class="app-card" onclick="openApp(10)">
+                    <div class="icon-box"><i data-lucide="folder" size="28"></i></div>
+                    <h3>Pods Folder</h3>
+                </div>
+                <div class="app-card" onclick="openApp(11)">
+                    <div class="icon-box"><i data-lucide="file-text" size="28"></i></div>
+                    <h3>Invoice's</h3>
                 </div>
             </div>
         </div>
@@ -149,39 +158,49 @@
     </div>
 
     <script>
-        const VALID_USER = "Richard Robinson";
-        const VALID_PASS = "Frost2026";
+        // Updated User Object
+        const USERS = {
+            "Richard Robinson": "Frost2026",
+            "C Frost": "Frost0115"
+        };
         
         const appUrls = [
+            "https://rich01623.github.io/Planner/",             
             "https://rich01623.github.io/frost-fleet-app/",    
             "https://rich01623.github.io/Office-dashboard/",  
-            "https://rich01623.github.io/fts-directory/",   
-            "https://rich01623.github.io/FTS-Customer-Portal/",   
+            "https://rich01623.github.io/fts-directory/",     
+            "https://rich01623.github.io/ratetest/",          
+            "https://rich01623.github.io/FTS-Customer-Portal/",
             "",                                                
-            "https://docs.google.com/forms/d/1Xl2XG_F78-E16qV_3o8V1jCqM-3YmF7_f_G8f8W78vI/edit", // 5. Vehicle Form
+            "https://docs.google.com/forms/d/1vwnqbRM7CLg7VoPao2irZXsWoO4cv987oA_t_ebVHDI/edit", 
             "",                                                
-            "https://docs.google.com/spreadsheets/d/1Bf837v_4C6UisC9Uat5Xo41uK2f-D9vRsh0p9W0p_2M/edit?usp=sharing"
+            "https://docs.google.com/spreadsheets/d/1Bf837v_4C6UisC9Uat5Xo41uK2f-D9vRsh0p9W0p_2M/edit?usp=sharing", 
+            "https://drive.google.com/drive/folders/1FCaMhHMWnYWDdCDHc_Ssuo5u4rcmJMyo?usp=sharing", 
+            ""                                                 
         ]; 
 
         const appNames = [
-            "Drivers App", "Driver Admin", "FTS Directory", 
-            "Customer Portal", "Customer Bookings", 
-            "Edit Vehicle Check Form", "Edit Trailer Check Form", "Drivers Time Sheets"
+            "Planner", "Drivers App", "Driver Admin", "FTS Directory", 
+            "Rate Card", "QTS PORTAL", "Customer Bookings", 
+            "Edit Vehicle Check Form", "Edit Trailer Check Form", "Drivers Time Sheets",
+            "Pods Folder", "Invoice's"
         ];
 
         window.onload = () => {
             lucide.createIcons();
-            if (localStorage.getItem('frost_session_active') === 'true') {
-                showDashboard();
+            const sessionUser = localStorage.getItem('frost_user');
+            if (sessionUser) {
+                showDashboard(sessionUser);
             }
         };
 
         function handleLogin() {
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value;
-            if (u === VALID_USER && p === VALID_PASS) {
-                localStorage.setItem('frost_session_active', 'true');
-                showDashboard();
+            
+            if (USERS[u] && USERS[u] === p) {
+                localStorage.setItem('frost_user', u);
+                showDashboard(u);
             } else {
                 document.getElementById('error-msg').style.display = 'block';
                 document.getElementById('password').value = "";
@@ -189,18 +208,25 @@
         }
 
         function handleLogout() {
-            localStorage.removeItem('frost_session_active');
+            localStorage.removeItem('frost_user');
             location.reload();
         }
 
-        function showDashboard() {
+        function showDashboard(username) {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('dashboard-screen').style.display = 'flex';
+            document.getElementById('display-user-name').innerText = username;
         }
 
         function openApp(index) {
             const url = appUrls[index];
-            if (!url) { return alert("Link not yet added."); }
+            if (!url) { return alert("The link for '" + appNames[index] + "' hasn't been added yet."); }
+            
+            if (index === 10) {
+                window.open(url, '_blank');
+                return;
+            }
+
             document.getElementById('active-app-name').innerText = "FROST SUITE | " + appNames[index].toUpperCase();
             document.getElementById('app-frame').src = url;
             document.getElementById('app-viewer').style.display = 'block';
